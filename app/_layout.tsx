@@ -1,24 +1,15 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { Stack,SplashScreen } from "expo-router";
+import "@/global.css"
+import { useFonts } from 'expo-font';
+import { PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
+import { DMSans_400Regular, DMSans_500Medium } from '@expo-google-fonts/dm-sans';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  const [loaded] = useFonts({
+    PlayfairDisplay_700Bold,
+    DMSans_400Regular,
+    DMSans_500Medium,
+  });
+ if (!loaded) return null; // wait for fonts to load before rendering
+  return <Stack  screenOptions={{headerShown:false}}/>;
 }
