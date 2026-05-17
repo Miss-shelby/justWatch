@@ -5,14 +5,20 @@ declare global {
     title:string,
     releaseDate:string,
     rating:string,
-    moviePoster:ImageSourcePropType
+    moviePoster:any
     
 }
  export interface RecommendedMovieProps{
+ 
     title:string,
     subtitle:string,
     tag:string,
     moviePoster:ImageSourcePropType
+    
+}
+export interface TopRatedMovieProps{
+    tag:string,
+    moviePoster:any
     
 }
 

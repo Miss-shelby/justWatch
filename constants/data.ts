@@ -62,3 +62,26 @@ export const recommendedMovies:RecommendedMovieProps[] = [
         moviePoster:image.gilmoreGirls
     }
 ]
+
+export const topRatedMovies:TopRatedMovieProps[] = [
+    {
+        id:'1',
+        tag:"",
+        moviePoster:image.moviePoster
+    },
+     {
+        id:"2",
+        tag:"",
+        moviePoster:image.summerImg
+    },
+     {
+        id:"3",
+        tag:"",
+        moviePoster:image.gilmoreGirls
+    },
+    {
+        id:"4",
+        tag:"",
+        moviePoster:image.godFather
+    }
+]

@@ -1,11 +1,17 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import "@/global.css"
 import { Ionicons } from "@expo/vector-icons"
 import { BlurView } from "expo-blur"
 import { Image, StyleSheet } from "react-native"
 import image from "@/constants/image";
+import { useState } from "react";
 
 export default function TabsLayout() {
+  const [isSignedIn, setIsSignedIn]  = useState(true)
+
+  if (!isSignedIn){
+    return <Redirect href="/(auth)/signIn" />;
+  }
   return (
     <Tabs
       screenOptions={{
