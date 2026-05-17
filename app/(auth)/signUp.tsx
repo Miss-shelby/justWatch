@@ -111,14 +111,14 @@ export default function SignUp() {
     //   }}
     // >
       <SafeAreaView className="flex-1 w-full bg-[#0e0e0e] p-5">
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+            // keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             className="flex-1"
+          >
+          <ScrollView className="flex-1"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
             <View className="w-full items-center">
               <View className="flex-row">
@@ -249,9 +249,9 @@ export default function SignUp() {
                   </View>
               </View>
             </View>
-          </KeyboardAvoidingView>
 
         </ScrollView>
+          </KeyboardAvoidingView>
       </SafeAreaView>
     // </Animated.ScrollView>
   );

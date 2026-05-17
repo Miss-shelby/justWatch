@@ -2,16 +2,17 @@ import { Redirect, Tabs } from "expo-router";
 import "@/global.css"
 import { Ionicons } from "@expo/vector-icons"
 import { BlurView } from "expo-blur"
-import { Image, StyleSheet } from "react-native"
+import { Image, Platform, StyleSheet } from "react-native"
 import image from "@/constants/image";
 import { useState } from "react";
 
 export default function TabsLayout() {
-  const [isSignedIn, setIsSignedIn]  = useState(true)
+  const [isSignedIn, setIsSignedIn] = useState(true)
 
-  if (!isSignedIn){
+  if (!isSignedIn) {
     return <Redirect href="/(auth)/signIn" />;
   }
+
   return (
     <Tabs
       screenOptions={{
@@ -19,19 +20,30 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: '#6b6b6b',
         animation: 'fade',
        
-        // Frosted glass tab bar like Netflix
-        tabBarBackground: () => (
-          <BlurView
-            intensity={80}
-            tint="dark"
-            style={StyleSheet.absoluteFill}
-          />
+        // Frosted glass tab bar on iOS, solid on Android
+        ...(Platform.OS === 'ios' 
+          ? {
+              tabBarBackground: () => (
+                <BlurView
+                  intensity={80}
+                  tint="dark"
+                  style={StyleSheet.absoluteFill}
+                />
+              ),
+              tabBarStyle: {
+                borderTopWidth: 0,
+                backgroundColor: 'transparent',
+                position: 'absolute',
+              },
+            }
+          : {
+              tabBarStyle: {
+                borderTopWidth: 0,
+                backgroundColor: '#1E1E1E',
+              },
+            }
         ),
-        tabBarStyle: {
-          borderTopWidth: 0,
-          backgroundColor: 'transparent',
-          position: 'absolute', // allows content to scroll behind it
-        },
+
         // Header transparent by default
         headerTransparent: true,
         headerStyle: {
@@ -43,39 +55,34 @@ export default function TabsLayout() {
         headerTitleStyle: {
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize:22
+          fontSize: 22
         },
         // Profile icon on the right
         headerRight: () => (
-            <Ionicons
+          <Ionicons
             name="person-circle-outline"
             size={32}
             color="#ffffff"
-            />
+          />
         ),
         headerLeftContainerStyle: {
-            paddingLeft: 20, 
+          paddingLeft: 20, 
         },
         headerRightContainerStyle: {
-            paddingRight: 20, 
+          paddingRight: 20, 
         },
-         
-        // contentStyle: {
-        //   backgroundColor: '#0e0e0e',
-        // },
       }}
     >
       <Tabs.Screen name="index" options={{
         title: "Home",
-        
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons name={focused ? "home" : "home-outline"} color={color} size={size} />
         ),
-       headerLeft: () => (
-        <Image className="h-10 w-10 object-contain"
-            source={image.logo}  
-           
-            />
+        headerLeft: () => (
+          <Image 
+            className="h-8 w-10 object-contain"
+            source={image.logo}
+          />
         ),
       }} />
       <Tabs.Screen name="search" options={{
