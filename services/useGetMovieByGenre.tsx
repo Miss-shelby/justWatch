@@ -53,4 +53,35 @@ export const useGetTopRatedMovie = () => {
     },
   });
 };
+export const useGetSimilarMovie = (movie_id:string) => {
+  return useQuery({
+    queryKey: ["similar-movies"],
+    queryFn: async () => {
+      const res = await axios.get(`${TMDB_BASE_URL}/movie/${movie_id}/similar`, {
+        params: {
+          api_key: TMDB_API_KEY,
+          sort_by: "popularity.desc",
+        }
+      });   
+      return res.data.results;
+    },
+    enabled:!!movie_id
+  });
+};
+
+
+export const useGetMovieById = (id: string) => {
+  return useQuery({
+    queryKey: ["movie", id],
+    queryFn: async () => {
+      const res = await axios.get(`${TMDB_BASE_URL}/movie/${id}`, {
+        params: {
+          api_key: TMDB_API_KEY,
+        }
+      });
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};
 

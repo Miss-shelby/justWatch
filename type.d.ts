@@ -8,6 +8,14 @@ declare global {
     moviePoster:any
     
 }
+ export interface FavouriteMovieProps{
+    title:string,
+    releaseDate:string,
+    rating:string,
+    moviePoster:any
+    id:string
+    
+}
  export interface RecommendedMovieProps{
  
     title:string,
@@ -17,6 +25,7 @@ declare global {
     
 }
 export interface TopRatedMovieProps{
+    id?:string,
     tag:string,
     moviePoster:any
     

@@ -18,7 +18,7 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#ffffff',
         tabBarInactiveTintColor: '#6b6b6b',
-        animation: 'fade',
+        // animation: 'fade',
        
         // Frosted glass tab bar on iOS, solid on Android
         ...(Platform.OS === 'ios' 
@@ -48,7 +48,10 @@ export default function TabsLayout() {
         headerTransparent: true,
         headerStyle: {
           backgroundColor: 'transparent',
-          height: 100,
+          height: 90,
+        },
+          headerTitleContainerStyle: {
+          // paddingBottom: 10,  // pushes title down, reducing top space
         },
         headerTitleAlign: 'left',
         headerTintColor: '#ffffff',
@@ -58,18 +61,20 @@ export default function TabsLayout() {
           fontSize: 22
         },
         // Profile icon on the right
-        headerRight: () => (
-          <Ionicons
-            name="person-circle-outline"
-            size={32}
-            color="#ffffff"
-          />
-        ),
+        // headerRight: () => (
+        //   <Ionicons className="pb-[10px]"
+        //     name="person-circle-outline"
+        //     size={32}
+        //     color="#ffffff"
+        //   />
+        // ),
         headerLeftContainerStyle: {
-          paddingLeft: 20, 
+          paddingLeft: 20,  
         },
         headerRightContainerStyle: {
           paddingRight: 20, 
+          // paddingBottom: 10
+
         },
       }}
     >
@@ -80,10 +85,18 @@ export default function TabsLayout() {
         ),
         headerLeft: () => (
           <Image 
-            className="h-8 w-10 object-contain"
+            className="h-7 w-7 object-contain"
             source={image.logo}
           />
         ),
+         headerRight: () => (  // ✅ moved here because i want it visible here only 
+        <Ionicons
+          name="person-circle-outline"
+          size={32}
+          color="#ffffff"
+          style={{ paddingBottom: 10, paddingRight: 20 }}
+        />
+      ),
       }} />
       <Tabs.Screen name="search" options={{
         title: "Search",
@@ -93,22 +106,32 @@ export default function TabsLayout() {
       }} />
       <Tabs.Screen name="favourite" options={{
         title: "Favourites",
+        //  tabBarStyle: { display: 'none' },
+          headerShown: false,
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons name={focused ? "heart" : "heart-outline"} color={color} size={size} />
         )
       }} />
       <Tabs.Screen name="chat" options={{
-        title: "Chat",
+          title: "chat",
+          headerShown: false,
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons name={focused ? "chatbubble" : "chatbubble-outline"} color={color} size={size} />
         )
       }} />
       <Tabs.Screen name="profile" options={{
         title: "Profile",
+         headerShown: false,
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons name={focused ? "person" : "person-outline"} color={color} size={size} />
         )
       }} />
+       <Tabs.Screen name="movieDetails/[id]" options={{ 
+        href: null,
+         title:"",
+         tabBarStyle: { display: 'none' },
+          headerShown: false,
+          }} />
     </Tabs>
   )
 }

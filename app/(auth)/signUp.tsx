@@ -1,4 +1,4 @@
-import { Text, View, Image, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Platform, Alert, ScrollView } from "react-native";
+import { Text, View, Image, StyleSheet, TextInput, Pressable, KeyboardAvoidingView, Platform, Alert, ScrollView, ActivityIndicator } from "react-native";
 import Animated from "react-native-reanimated";
 import { useAnimatedHeader } from "@/components/hooks/useAnimatedHeader";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "@/services/Api";
 import Toast from "react-native-toast-message";
+
 
 const signUpSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -54,25 +55,25 @@ export default function SignUp() {
     const mutation = useMutation<any, any, any>({
     mutationFn: register, 
     onSuccess: (response: any) => {  
-      const { data, message, status } = response;
+      const { details} = response;
+     
+      
 
-      if (status === "success" && data?.profile) {
+      if (details.status === "success" ) {
         // dispatch(setUser(data.profile));
         // Show success message
-         Toast.show({
-              type: "sucess",
-              text1: data?.response?.data?.message || "User not verified",
-              position: "top",
-        });
-
+        Alert.alert("Sucess");
+        setTimeout(()=>{
+           router.push("/(auth)/signIn")
+        },2000)
         // Handle routing 
-        router.push("/(auth)/signIn")
+       
        
       }
     },
     onError: (error: any) => {
       const errorMessage =
-        error?.response?.data?.message ||
+        error?.response?.data?.detail ||
         error?.message ||
         JSON.stringify(error?.response?.data?.message) ||
         "An error occurred";
@@ -83,7 +84,7 @@ export default function SignUp() {
            text1: errorMessage,
            position: "top",
          });
-      console.log(error?.response?.data,'error from react query');
+    
       
     },
   });
@@ -236,11 +237,20 @@ export default function SignUp() {
                   </View>
                   
                   <Pressable onPress={onSubmit}
-                  className={`bg-red  rounded-2xl px-10 mt-10 py-3 self-center ${(!formValid || mutation.isPending ) && ''}`}
+                  className={`bg-red  rounded-2xl px-10 mt-10 py-3 self-center ${(!formValid || mutation.isPending )
+                     && 'opacity-30'}`}
                   disabled={!formValid || mutation.isPending} >
-                      <Text className="text-white text-body text-lg  ">{
-                          mutation.isPending?"Signing....":"Sign Up"
-                          }</Text>
+                    {
+                      mutation.isPending? (
+                        <View className="flex-row items-center gap-2">
+                           <Text className="text-white text-body text-lg  ">Signing</Text>
+                             <ActivityIndicator size={15} color='white'/>
+                          </View>
+                      )
+                      :
+                       <Text className="text-white text-body text-lg  ">Sign Up</Text>
+                    }
+                     
                   </Pressable>
                   <View className="mx-auto my-6 h-[1px] w-full bg-[#2a2a2a]" />
                   <View className="mt-6 flex-row items-center justify-center gap-2">

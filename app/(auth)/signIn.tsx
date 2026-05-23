@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import { login } from "@/services/Api";
+import { ActivityIndicator } from "react-native";
 
 export default function SignIn() {
 //  const { scrollHandler } = useAnimatedHeader();
@@ -31,10 +32,13 @@ export default function SignIn() {
  const mutation = useMutation<any, any, any>({
   mutationFn: login,
   onSuccess: () => {
+    Alert.alert("sucess")
    Toast.show({ type: 'success', text1: 'Signed in successfully!' });
    router.push('/(tabs)');
   },
   onError: (error: any) => {
+    console.log(error,'login error ');
+    
    Alert.alert('Error', error?.response?.data?.message || 'Login failed');
   },
  });
@@ -47,7 +51,7 @@ export default function SignIn() {
           keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
           className="flex-1"
         >
-          <View className="w-full items-center mt-6">
+          <View className="w-full items-center">
             <View className="flex-row">
                 <Text className="text-white font-bold text-3xl ">Just</Text>
                 <Text className="text-red font-bold text-3xl ">Watch</Text>
@@ -55,7 +59,7 @@ export default function SignIn() {
           </View>
           <View className="flex-1 w-full items-center px-2">
              <View className="w-full items-center">
-                <Text className="text-white text-center font-body text-2xl ">Welcome Back!</Text>
+                <Text className="text-white text-center font-body text-2xl mt-14">Welcome Back!</Text>
                 <Text className="text-white font-medium pt-3 text-center text-xl ">Please sign in to your account{"\n"}to continue</Text>
             </View>
             <View className="mt-14 w-full">
@@ -96,7 +100,8 @@ export default function SignIn() {
                         
                 </View>
                 <Pressable 
-                  className="bg-red rounded-2xl px-10 mt-10 py-3 self-center"
+                  className={`bg-red  rounded-2xl px-10 mt-10 py-3 self-center ${( mutation.isPending || !success )
+                     && 'opacity-30'}`}
                   onPress={() => {
                     if (success) {
                       mutation.mutate(validatedData);
@@ -106,7 +111,17 @@ export default function SignIn() {
                   }}
                   disabled={mutation.isPending}
                 >
-                    <Text className="text-white text-body text-lg">{mutation.isPending ? 'Signing In...' : 'Sign In'}</Text>
+                  {
+                    mutation.isPending ? (
+                      <View className="flex-row items-center gap-2">
+                         <Text className="text-white text-body text-lg  ">Signing</Text>
+                          <ActivityIndicator size={15} color='white'/>
+                      </View>
+                    )
+                    :
+                     <Text className="text-white text-body text-lg">Sign In</Text>
+                  }
+               
                 </Pressable>
                 <View className="mx-auto my-6 h-px w-full bg-[#2a2a2a]" />
                 <View className="mt-6 flex-row items-center justify-center gap-2">

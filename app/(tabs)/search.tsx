@@ -1,4 +1,4 @@
-import { Text, View, Image, StyleSheet, ActivityIndicator, KeyboardAvoidingView, TextInput } from "react-native";
+import { Text, View, Image, StyleSheet, ActivityIndicator, KeyboardAvoidingView, TextInput, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 import image from "@/constants/image";
 import { useAnimatedHeader } from "@/components/hooks/useAnimatedHeader";
@@ -9,6 +9,7 @@ import { useGetAllMovies } from "@/services/useGetAllMovies";
 import { useMemo, useState } from "react";
 import { useSearchMovies } from "@/services/useSearchMovies";
 import { Platform } from "react-native";
+import { Link } from "expo-router";
 
 export default function SearchScreen() {
  const { scrollHandler } = useAnimatedHeader();
@@ -16,15 +17,30 @@ export default function SearchScreen() {
  const [query, setQuery] = useState('')
 
  // always fetches on page load
-const {data:popularMovies,isLoading,error,refetch,isRefetching} = useGetAllMovies()
+// const {data:popularMovies,isLoading,error,refetch,isRefetching} = useGetAllMovies()
+const {
+  data: popularMovies,
+  isLoading,
+  error,
+  refetch,
+  isRefetching,
+  fetchNextPage: fetchNextPopularPage,
+  hasNextPage: hasNextPopularPage,
+  isFetchingNextPage: isFetchingNextPopularPage,
+} = useGetAllMovies();
+
+
+
 
 // only fetches when user types
 const { data: searchResults, fetchNextPage, hasNextPage,isFetchingNextPage } = useSearchMovies(query)
 
-// show search results when typing, popular movies when not
-const movies = query 
+// show search results when typing, popular movies when not typing
+const movies = query
   ? searchResults?.pages.flatMap(page => page.results) ?? []
-  : popularMovies?.results ?? []
+  : popularMovies?.pages.flatMap(page => page.results) ?? []; // <-- changed
+
+  
 
 const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
 
@@ -48,6 +64,25 @@ const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
     [query]
   );
 
+  if (isLoading) {
+  return (
+    <View className="flex-1 bg-bg items-center justify-center">
+      <ActivityIndicator size="large" color="#fff" />
+    </View>
+  );
+}
+
+if (error) {
+  return (
+    <View className="flex-1 bg-bg items-center justify-center">
+      <Text className="text-white text-center">Something went wrong.</Text>
+      <Text className="text-gray text-sm mt-2" onPress={() => refetch()}>Tap to retry</Text>
+    </View>
+  );
+}
+
+
+
   return (
     <Animated.FlatList
       onScroll={scrollHandler}
@@ -56,7 +91,8 @@ const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
       contentContainerStyle={{
         paddingTop: 65,
         paddingBottom: 100,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,//gives space space at left and right 
+       
       }}
       showsVerticalScrollIndicator={false}
       ListHeaderComponent={header}
@@ -64,11 +100,18 @@ const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
        refreshing={isRefetching}
        onRefresh={refetch}
       renderItem={({item})=>(
-              <TrendCard title={item.original_title} releaseDate={item.release_date} rating={item.vote_average} moviePoster=
-              {`${imgBaseURL}${item.poster_path}`} />
+          <Link href={{
+            pathname: "/(tabs)/movieDetails/[id]",
+            params: { id: item.id }
+          }} asChild>
+              <TouchableOpacity  className="flex-1 w-full ">
+                  <TrendCard title={item.original_title} releaseDate={item.release_date} rating={item.vote_average} moviePoster=
+                  {`${imgBaseURL}${item.poster_path}`} />
+              </TouchableOpacity>
+          </Link>
             )}  
       numColumns={2}
-      columnWrapperStyle={{ gap: 12 }}
+      columnWrapperStyle={{ gap: 14}}//gives column gap between the cards
       ItemSeparatorComponent={() => <View className="h-4"></View>}
       ListEmptyComponent={
         <Text className="home-empty-state text-white">
@@ -76,11 +119,16 @@ const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
         </Text>
       }
       onEndReachedThreshold={0.5} // loads next page when 50% from bottom
-       ListFooterComponent={isFetchingNextPage ? <ActivityIndicator /> : null}
+       ListFooterComponent={ isFetchingNextPage || isFetchingNextPopularPage  ? <ActivityIndicator /> : null}
       keyExtractor={(item)=> item.id}
-      onEndReached={() => {
-     if (query && hasNextPage) fetchNextPage()
-     }}
+    //   onEndReached={() => {
+    //  if (query && hasNextPage) fetchNextPage()
+    //  }}
+    // update onEndReached
+    onEndReached={() => {
+      if (query && hasNextPage) fetchNextPage();
+      if (!query && hasNextPopularPage) fetchNextPopularPage(); // <-- added
+    }}
     keyboardShouldPersistTaps="handled"
     />
   );

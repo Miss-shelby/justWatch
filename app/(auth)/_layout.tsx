@@ -4,9 +4,11 @@ import { Stack } from 'expo-router';
 
 const AuthLayout = () => {
   return <Stack screenOptions={{ 
-   headerShown: true,
+   headerShown: false,
   headerTransparent: true,
   headerTitle: '',
+  headerLeft:()=> null 
+  // presentation:'modal'
   }} />;
 }
 

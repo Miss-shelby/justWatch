@@ -3,6 +3,8 @@ import ApiFetcher from "@/services/ApiFetcher"
 export const login:any = async (formData:any) => {
   try {
     const response = await ApiFetcher.post("/auth/login", formData);
+    console.log(response,'login response');
+    
     return response;
   } catch (error: any) {
     console.log(error, 'error from login function');
@@ -25,11 +27,10 @@ export const login:any = async (formData:any) => {
 export const register:any = async (formData:any) => {
   try {
     const response = await ApiFetcher.post("/auth/register/", formData);
+    console.log(response,'register res ');
+    
     return response;
   } catch (error: any) {
-    console.error("Register error:", error);
-  console.error("Response data:", error?.response?.data);
-  console.error("Message:", error?.message);
    Toast.show({
       type: "error",
       text1: error?.response?.data?.message || "User not verified",

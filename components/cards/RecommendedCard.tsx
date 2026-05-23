@@ -1,13 +1,14 @@
 import { View, Text, Image, Pressable, ImageBackground } from 'react-native'
 import React from 'react'
-import { Ionicons } from '@expo/vector-icons'
-import image from '@/constants/image'
+
 
 const RecommendedCard = ({title,subtitle,tag,moviePoster}:RecommendedMovieProps) => {
+  
+    
   return (
     <Pressable className=' mt-4 w-80 rounded-xl mr-4 '>
-        <ImageBackground className='rounded-xl  min-h-60 h-full  w-full bg-no-repeat flex-1 justify-center  overflow-hidden' resizeMode='cover' source={moviePoster}>
-        <View className='p-4 flex-1 justify-end '>
+        <ImageBackground className='rounded-xl h-60  w-full bg-no-repeat justify-center  overflow-hidden' resizeMode='cover' source={moviePoster}>
+        <View className='p-4 flex-1 justify-end '> 
              <Pressable className='bg-red self-start mb-1 w-fit px-2 py-1 rounded-lg'>
                     <Text className='text-white font-bold uppercase'>{tag}</Text>
                 </Pressable>
