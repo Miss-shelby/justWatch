@@ -28,7 +28,7 @@ httpClient.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem("access_token");
 
-    console.log(token,'token string from api fetcher ');
+    // console.log(token,'token string from api fetcher ');
     // Don't attach token to login/register endpoints
     if (!config.url?.includes('/auth/login') && !config.url?.includes('/auth/register')) {
       if (token) {
@@ -39,7 +39,7 @@ httpClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error("Request error:", error);
+    // console.error("Request error:", error);
     return Promise.reject(error);
   }
 );
@@ -50,11 +50,11 @@ httpClient.interceptors.response.use(
     return response.data;
   },
   async  (error) => {
-    console.log(error.response,'raw error from config');
+    // console.log(error.response,'raw error from config');
     const status = error.response?.status;
     const message = error.response?.data?.message;
-    console.log(message,'config error message ');
-    console.log(status,'error status');
+    // console.log(message,'config error message ');
+    // console.log(status,'error status');
     
     
     // Handle token expiration (401 or 400 with expired message)

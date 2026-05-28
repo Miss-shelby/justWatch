@@ -101,7 +101,7 @@ if (error) {
        onRefresh={refetch}
       renderItem={({item})=>(
           <Link href={{
-            pathname: "/(tabs)/movieDetails/[id]",
+            pathname: "/movieDetails/[id]",
             params: { id: item.id }
           }} asChild>
               <TouchableOpacity  className="flex-1 w-full ">

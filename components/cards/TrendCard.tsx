@@ -17,7 +17,7 @@ export const TrendCard = ({title,releaseDate,rating,moviePoster}:TrendingMoviePr
              </Text>
              <View className='flex-row items-center gap-2'>
                 <Ionicons name='star-outline' color='#F7434B'/>
-                 <Text className='text-red font-medium'>{rating}</Text>
+                 <Text className='text-red font-medium'>{Math.round(Number(rating))}</Text>
              </View>
         </View>
       </View>
@@ -33,7 +33,7 @@ export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id,handleDel
 
     <View className='bg-transparent mt-4 w-full flex-1 rounded-xl '>
         <Link className="" href={{
-                pathname: "/(tabs)/movieDetails/[id]",
+                pathname: "/movieDetails/[id]",
                 params: { id: id }
             }} asChild >
             <TouchableOpacity className="">
@@ -45,7 +45,7 @@ export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id,handleDel
         <View className='flex-row justify-between items-center'>
              <View className='flex-row items-center gap-2'>
                 <Ionicons name='star-outline' color='#F7434B'/>
-                 <Text className='text-red font-medium'>{rating}</Text>
+                 <Text className='text-red font-medium'>{Math.round(Number(rating))}</Text>
              </View>
              <Pressable hitSlop={15} onPress={handleDelete} className='bg-transparent p-1 border border-amber-50/10 rounded-full gap-2'>
                 <Ionicons name='remove-outline' color='#F7434B'/>

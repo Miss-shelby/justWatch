@@ -1,7 +1,7 @@
 export const addToWatchlistCache = (queryClient: any, item: any) => {
   queryClient.setQueryData(['watchlist'], (old: any = []) => {
     const exists = old.find(
-      (x: any) => String(x.movie_id) === String(item.movie_id)
+      (x: any) => String(x.id) === String(item.movie_id) || String(x.movie_id) === String(item.movie_id)
     );
 
     if (exists) return old;
@@ -28,6 +28,6 @@ export const removeFromWatchlistCache = (queryClient: any, watchlistId: string) 
 
 export const isInWatchlist = (watchlist: any, movieId: string) => {
   return watchlist?.some(
-    (item: any) => String(item.movie_id) === String(movieId)
+    (item: any) => String(item.id) === String(movieId) || String(item.movie_id) === String(movieId)
   );
 };

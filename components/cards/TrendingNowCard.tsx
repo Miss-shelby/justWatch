@@ -5,6 +5,7 @@ import image from '@/constants/image'
 import { Ionicons } from '@expo/vector-icons'
 import { useGetTopRatedMovie } from '@/services/useGetMovieByGenre'
 import { GENRES } from '@/constants/genre'
+import { Link } from 'expo-router'
 
 const TrendingNowCard = () => {
     const {data:topRated } =  useGetTopRatedMovie()
@@ -42,31 +43,32 @@ const TrendingNowCard = () => {
             RYAN GOSLING · HARRISON FORD
           </Text> */}
           {/* Tags row */}
-            <View className='flex-row items-center justify-center gap-2 mb-4'>
+            <View className='flex-row flex-wrap items-center justify-center gap-2 mb-4 px-4'>
                     <View className='flex-row items-center bg-card rounded-full px-2 py-1 gap-1'>
                         <Text className='text-yellow-400 text-xs'>★</Text>
-                        <Text className='text-white text-xs font-body'>{topRated[0].vote_average}</Text>
+                        <Text className='text-white text-xs font-body'>{Math.round(Number(topRated[0].vote_average))}</Text>
                     </View>
                     <View className='border border-light rounded px-1'>
                         <Text className='text-light text-xs'>R</Text>
                     </View>
                     <Text className='text-light text-xs'>{topRated[0]?.release_date}</Text>
-                    {filteredGenre?.map((genre: string) => (
-                      <Text className='text-light text-xs block' key={genre}>{genre}</Text>
+                    {filteredGenre?.map((genre: string) => ( 
+                      <Text className='text-light text-xs' key={genre}>{genre}</Text>
                     ))}
             </View>
              {/* Watch Now button */}
+             <Link
+             href={{
+              pathname:"/movieDetails/[id]",
+              params: { id: topRated[0].id }
+             }}
+             asChild
+             > 
                 <Pressable className='bg-red rounded-2xl flex-row items-center gap-2  py-3 px-10 self-center mb-4'>
                     <Ionicons name='play' color='white' size={20}/>
                     <Text className='text-white font-body text-base'>Play Now</Text>
                 </Pressable>
-                {/* Pagination dots */}
-                {/* <View className='flex-row justify-center gap-2'>
-                    <View className='w-5 h-1 bg-red rounded-full'/>
-                    <View className='w-5 h-1 bg-light rounded-full'/>
-                    <View className='w-5 h-1 bg-light rounded-full'/>
-                    <View className='w-5 h-1 bg-light rounded-full'/>
-                </View> */}
+             </Link>
 
           </View>
         </ImageBackground>

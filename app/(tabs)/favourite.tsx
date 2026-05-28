@@ -12,7 +12,7 @@ import { useWatchlistActions } from "@/services/useWatchlistAction";
 export default function Favourites() {
    const SafeAreaView = styled(RNSafeAreaView)
     const { data: watchlist, isLoading, refetch } = useGetWatchlist();
-    console.log(watchlist,'favourite watchlist');
+    // console.log(watchlist,'favourite watchlist');
 
     const queryClient = useQueryClient();
     const { data:user } = useQuery<UserProfile>({
@@ -45,7 +45,7 @@ const deleteMutation = useMutation({
      Alert.alert('Success', 'Movie removed from watchlist');
   },
   onError: (error) => {
-    console.log(error, 'delete error');
+    // console.log(error, 'delete error');
     Alert.alert('Error', 'Failed to delete from watchlist');
   }
 });

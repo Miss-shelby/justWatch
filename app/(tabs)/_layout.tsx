@@ -138,6 +138,7 @@ export default function TabsLayout() {
         options={{
           title: "chat",
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "chatbubble" : "chatbubble-outline"}
@@ -159,15 +160,6 @@ export default function TabsLayout() {
               size={size}
             />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="movieDetails/[id]"
-        options={{
-          href: null,
-          title: "",
-          tabBarStyle: { display: "none" },
-          headerShown: false,
         }}
       />
     </Tabs>

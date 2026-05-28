@@ -58,7 +58,7 @@ export default function SignIn() {
       }, 1000);
     },
     onError: (error: any) => {
-      console.log(error, "login error");
+      // console.log(error, "login error");
 
       Alert.alert("Error", error?.response?.data?.message || "Login failed");
     },
@@ -93,7 +93,8 @@ export default function SignIn() {
             <View className="mt-14 w-full">
               <View className="w-full">
                 <TextInput
-                  className="bg-[#141414] w-full rounded-2xl border-none px-4 py-4 text-lg font-sans-medium text-white placeholder:text-gray!"
+                  className="bg-[#141414] w-full rounded-2xl border-none px-4 h-14 text-lg font-sans-medium text-white placeholder:text-gray!"
+                  style={{ textAlignVertical: 'center', includeFontPadding: false }}
                   autoCapitalize="none"
                   value={formData.email}
                   placeholder="Email"
@@ -115,7 +116,8 @@ export default function SignIn() {
               </View>
               <View className="w-full mt-6 relative">
                 <TextInput
-                  className="bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!"
+                  className="bg-[#141414] w-full rounded-2xl border-none px-4 h-14 text-lg font-sans-medium text-white placeholder:text-gray!"
+                  style={{ textAlignVertical: 'center', includeFontPadding: false }}
                   autoCapitalize="none"
                   value={formData.password}
                   placeholder="Password"

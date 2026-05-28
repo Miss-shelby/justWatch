@@ -69,3 +69,20 @@ export const UsegetFavourites:any =  () => {
   })    
 };
 
+
+export const useGetAiChatHistory:any =  () => {
+  return useQuery({
+    queryKey: ["ai-chat"], 
+    queryFn: async () => {
+      const response = await ApiFetcher.get("/ai/chats/");
+      console.log(response,'fetch api response');
+       
+      return response 
+    }
+ 
+  })    
+};
+export const postAiChat:any = async (userMsg:any) => {
+    const response = await ApiFetcher.post("/ai/chats/", {message:userMsg});
+    return response
+};

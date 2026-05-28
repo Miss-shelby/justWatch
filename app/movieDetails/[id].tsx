@@ -1,6 +1,6 @@
 import { Alert, Animated, FlatList, ImageBackground, Pressable, ScrollView,  Text,  View, Modal } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter, Stack } from 'expo-router';
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 import { styled } from "nativewind";
 import { Ionicons } from '@expo/vector-icons';
@@ -16,10 +16,10 @@ import MoviePlayer from '@/components/MoviePlayer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ApiFetcher from "@/services/ApiFetcher"
 import { useGetWatchlist } from '@/services/UseGetMovieFavourites';
-import { UserProfile } from '../profile';
 import { fetchUser } from '@/services/Api';
 import { useWatchlistActions } from '@/services/useWatchlistAction';
 import { isInWatchlist } from '@/services/watchlistcache';
+import { UserProfile } from '../(tabs)/profile';
 
 const SafeAreaView = styled(RNSafeAreaView)
 const MovieDetails = () => {
@@ -30,12 +30,9 @@ const MovieDetails = () => {
     const { data: watchlist,  } = useGetWatchlist();
     const { data:user } = useQuery<UserProfile>({
     queryKey: ["user-profile"],
-    queryFn: fetchUser,
+    queryFn: fetchUser, 
   });
-  const { add, remove } = useWatchlistActions(user?.result.email);
-
-
-
+   const { add, remove } = useWatchlistActions(user?.result.email);
     const [showPlayer, setShowPlayer] = useState(false) // MODAL STATE
     const queryClient = useQueryClient();
     const router = useRouter()
@@ -53,8 +50,7 @@ const MovieDetails = () => {
             router.push('/(tabs)')
         }
     }
-  
-
+   
     const playLikeSound = async () => {
         const { sound } = await Audio.Sound.createAsync(
             require('@/assets/sounds/like.mp3.wav')
@@ -68,52 +64,33 @@ const MovieDetails = () => {
     }
     
 
- const addMovieToWatchlist = useMutation({
-  mutationFn: async () => {
-    return await ApiFetcher.post(`/p3/watch-list/?movie_id=${id}`);
-  },
-  onSuccess: async (response) => { 
-    queryClient.invalidateQueries({ queryKey: ['watchlist'] });
-      Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
-      Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
-        ]).start()
-        // await playLikeSound()
-        Alert.alert("Added to favourites!") 
-  },
-  onError: (error) => {
-    console.log(error, 'adding  error');
-    Alert.alert('Error', 'Failed!');
-  }
-});
-
-const deleteMutation = useMutation({
-  mutationFn: async (watchlistId: string) => {
-    return await ApiFetcher.delete(`/p3/watch-list/${watchlistId}?email=${user?.result.email}`);
-  },
-  onSuccess: async () => {
-    queryClient.invalidateQueries({ queryKey: ['watchlist'] });
-     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
-      Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
-        ]).start()
-        // await playLikeSound()
-     Alert.alert('Success', 'Movie removed from favourite');
-  },
-  onError: (error) => {
-    console.log(error, 'delete error');
-    Alert.alert('Error', 'Failed to delete from watchlist');
-  }
-});
 const handleAddToFav = () => {
   if (isMovieFavourite) {
    const item = watchlist?.find(
-  (m: any) => String(m.movie_id) === String(id)
+  (m: any) => String(m.id) === String(id) || String(m.movie_id) === String(id)
 );
 
-    if (item) remove.mutate(item.id);
+    if (item) {
+      remove.mutate(item.id, {
+        onSuccess: () => {
+        //   Animated.sequence([
+        //     Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
+        //     Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+        //   ]).start();
+          Alert.alert('Success', 'Movie removed from favourite');
+        }
+      });
+    }
   } else {
-    add.mutate(id);
+    add.mutate(movie || id, {
+      onSuccess: () => {
+        // Animated.sequence([
+        //   Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
+        //   Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+        // ]).start();
+        Alert.alert("Added to favourites!");
+      }
+    });
   }
 };
 
@@ -137,11 +114,11 @@ const handleAddToFav = () => {
 
     return (
         <SafeAreaView className='flex-1 w-full bg-[#0e0e0e]'>
+            <Stack.Screen options={{ headerShown: false,title:'' }} />
             <ScrollView 
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false} 
-                className='flex-1'
-            >
+                className='flex-1'>
                 {/* HEADER - Back & Favorite */}
                 <View className='flex-row items-center justify-between px-5 pt-5 pb-0'>
                     <Pressable onPress={handleBack}>
@@ -258,8 +235,7 @@ const handleAddToFav = () => {
                                 />
                             </View>
                         )} 
-                        horizontal
-                        scrollEnabled={false}
+                        horizontal 
                         ListEmptyComponent={
                             <Text className="text-gray text-center">No Similar Movies</Text>
                         }
