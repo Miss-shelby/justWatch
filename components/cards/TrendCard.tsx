@@ -27,11 +27,8 @@ export const TrendCard = ({title,releaseDate,rating,moviePoster}:TrendingMoviePr
 
 
 
-export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id}:FavouriteMovieProps) => {
-     const handleRemoveFav = async () => {
-          Alert.alert(`${title} removed favourites!`)
-      }
-  // removed mr-4 
+export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id,handleDelete}:FavouriteMovieProps) => {
+    
   return (
 
     <View className='bg-transparent mt-4 w-full flex-1 rounded-xl '>
@@ -50,7 +47,7 @@ export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id}:Favourit
                 <Ionicons name='star-outline' color='#F7434B'/>
                  <Text className='text-red font-medium'>{rating}</Text>
              </View>
-             <Pressable onPress={handleRemoveFav} className='bg-transparent p-1 border border-amber-50/10 rounded-full gap-2'>
+             <Pressable hitSlop={15} onPress={handleDelete} className='bg-transparent p-1 border border-amber-50/10 rounded-full gap-2'>
                 <Ionicons name='remove-outline' color='#F7434B'/>
                  {/* <Text className='text-red font-medium'>{rating}</Text> */}
              </Pressable>

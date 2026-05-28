@@ -1,45 +1,67 @@
-import { Stack } from "expo-router";
-import "@/global.css"
-import { useFonts } from 'expo-font';
-import { PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
-import { DMSans_400Regular, DMSans_500Medium } from '@expo-google-fonts/dm-sans';
-import { QueryClient, QueryClientProvider,focusManager } from '@tanstack/react-query'
-import { AppState } from 'react-native'
+import "@/global.css";
+import {
+  DMSans_400Regular,
+  DMSans_500Medium,
+} from "@expo-google-fonts/dm-sans";
+import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display";
+import {
+  QueryClient,
+  QueryClientProvider,
+  focusManager,
+} from "@tanstack/react-query";
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { StatusBar } from 'expo-status-bar'
+import { AppState } from "react-native";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
+SplashScreen.preventAutoHideAsync();
 
-// SplashScreen.preventAutoHideAsync();
-export default function RootLayout() {
+const queryClient = new QueryClient();
 
-  // SplashScreen.preventAutoHideAsync() tells Expo to keep the splash screen visible until you manually hide it with SplashScreen.hideAsync().
+// Separate inner component so it can consume AuthProvider
+function AppLayout() {
+  const { isReady } = useAuth();
 
-useEffect(()=>{
-  AppState.addEventListener('change', (status) => {
-    focusManager.setFocused(status === 'active')
-  })
-  // It keeps your feteched  data fresh when users switch between apps.
-},[])
-
-
-  const queryClient = new QueryClient()
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_700Bold,
     DMSans_400Regular,
     DMSans_500Medium,
   });
 
- 
   useEffect(() => {
-    if (fontsLoaded) {
-      // SplashScreen.hideAsync();
+    AppState.addEventListener("change", (status) => {
+      focusManager.setFocused(status === "active");
+    });
+
+    if (fontsLoaded && isReady) {
+      SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]); // wait for fonts to load before rendering
+  }, [fontsLoaded, isReady]);
+
+  if (!isReady || !fontsLoaded) {
+    return null;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
-       <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false,contentStyle:
-         { backgroundColor: '#FF3131' } }} />
+      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: "blue" },
+        }}
+      />
     </QueryClientProvider>
-  )
+  );
+}
+
+// Root wraps everything with AuthProvider
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <AppLayout />
+    </AuthProvider>
+  );
 }

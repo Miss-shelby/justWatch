@@ -8,7 +8,7 @@ export default function MoviePlayer({ movieId }:any) {
   
 
   return (
-    <View style={{ width: '100%', height: 400 }}>
+    <View style={{ width: '100%', height: 600 }}>
       <WebView 
       allowfullscreen
         source={{

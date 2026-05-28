@@ -1,21 +1,10 @@
 import Toast from "react-native-toast-message";
 import ApiFetcher from "@/services/ApiFetcher"
+import { useQuery } from "@tanstack/react-query";
 export const login:any = async (formData:any) => {
-  try {
-    const response = await ApiFetcher.post("/auth/login", formData);
-    console.log(response,'login response');
-    
+    const response = await ApiFetcher.post("/auth/login/", formData);
     return response;
-  } catch (error: any) {
-    console.log(error, 'error from login function');
-   Toast.show({
-      type: "error",
-      text1: error?.response?.data?.message || "User not verified",
-      position: "top",
-    });
 
-      return error;
-    }
     //     If you only return error, React Query will never treat it as an error.
     // If you throw error, it behaves exactly like you expect:
     // ✅ onError runs
@@ -27,7 +16,6 @@ export const login:any = async (formData:any) => {
 export const register:any = async (formData:any) => {
   try {
     const response = await ApiFetcher.post("/auth/register/", formData);
-    console.log(response,'register res ');
     
     return response;
   } catch (error: any) {
@@ -63,3 +51,21 @@ export const register:any = async (formData:any) => {
 //     // handle success
 //   }
 // })
+
+
+export const fetchUser:any = async () => {
+    const response = await ApiFetcher.get("/auth/user-me/");
+    return response;
+};
+
+export const UsegetFavourites:any =  () => {
+  return useQuery({
+    queryKey: ["favourites"],
+    queryFn: async () => {
+      const response = await ApiFetcher.get("/p3/watch-list/");
+      return response
+    }
+
+  })    
+};
+

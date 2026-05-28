@@ -11,6 +11,10 @@ import RecommendedCard from "@/components/cards/RecommendedCard";
 import TopRatedCard from "@/components/cards/TopRatedCard";
 import { useGetMovieByGenre, useGetPopularMovie, useGetTopRatedMovie } from "@/services/useGetMovieByGenre";
 import { Link } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUser } from "@/services/Api";
+import { UserProfile } from "./profile";
+import { getGreeting } from "@/utils/helpers";
 
 export default function HomeScreen() {
  const { scrollHandler } = useAnimatedHeader();
@@ -18,7 +22,12 @@ export default function HomeScreen() {
  
   const {data:actionMovie} = useGetMovieByGenre(28)
   const {data:poplularMovies } =  useGetPopularMovie()
-   const {data:topRated } =  useGetTopRatedMovie()
+  const {data:topRated } =  useGetTopRatedMovie()
+
+const {data:user} = useQuery<UserProfile>({
+  queryKey:['user-profile'],
+  queryFn:fetchUser
+ })
    
  const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
   const imgDropPathBaseURL = "https://image.tmdb.org/t/p/original/"
@@ -39,9 +48,8 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
       ListHeaderComponent={() => (
         <SafeAreaView>
-          <Text className="text-gray text-lg font-body ">Good evening</Text>
-          <Text className="text-light text-2xl font-heading">Ahmie</Text>
-           <Link className="text-white" href="/(auth)/signIn">sign up here </Link>
+          <Text className="text-gray text-lg font-body ">{getGreeting()}</Text>
+          <Text className="text-light text-2xl font-heading">{user?.result.username}</Text>
           <TrendingNowCard/>
             <View className="mb-10">
             <ListHeading title ="Popular Movies" />

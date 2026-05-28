@@ -53,7 +53,7 @@ export default function Chat() {
         </View>
         <View className="bg-card self-start border border-[#333] max-w-[82%] py-3 px-3 rounded-xl rounded-bl-sm">
           <Text className="text-[#ddd]">For a nostalgic night in, I'd suggest The Grand Budapest Hotel or Cinema Paradiso — a deeply emotional journey through cinema itself. What genre hits hardest for you?
-    </Text>
+        </Text>
         </View>
 
         {/* User typing message (if userMsg exists) */}

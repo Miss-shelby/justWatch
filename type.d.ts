@@ -14,6 +14,7 @@ declare global {
     rating:string,
     moviePoster:any
     id:string
+    handleDelete:()  =>void
     
 }
  export interface RecommendedMovieProps{
@@ -33,5 +34,10 @@ export interface TopRatedMovieProps{
 
    
 }
+
+export interface Genre{
+  id:string,
+  title:string
+ }
 
 export {};

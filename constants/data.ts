@@ -1,5 +1,6 @@
 import { ImageSourcePropType } from "react-native";
 import image from "./image";
+import { Genre } from "@/type";
 
 
 export const trendingMovies:TrendingMovieProps[] = [
@@ -85,3 +86,38 @@ export const topRatedMovies:TopRatedMovieProps[] = [
         moviePoster:image.godFather
     }
 ]
+
+ export const favouriteGenres:Genre[]  = [
+    {
+      id:'1',
+      title:"Sci-Fi"
+    },
+     {
+      id:'2',
+      title:"Thriller"
+    },
+     {
+      id:'3',
+      title:"Drama"
+    },
+     {
+      id:'4',
+      title:"Horror"
+    },
+     {
+      id:'5',
+      title:"comedy"
+    },
+     {
+      id:'6',
+      title:"Action"
+    },
+     {
+      id:'7',
+      title:"Romance"
+    },
+     {
+      id:'8',
+      title:"Documentary"
+    }
+  ]

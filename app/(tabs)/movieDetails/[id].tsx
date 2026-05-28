@@ -1,5 +1,5 @@
-import { Alert, Animated, FlatList, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, View, Modal } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { Alert, Animated, FlatList, ImageBackground, Pressable, ScrollView,  Text,  View, Modal } from 'react-native'
+import React, { useRef, useState } from 'react'
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 import { styled } from "nativewind";
@@ -8,24 +8,44 @@ import image from '@/constants/image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import ListHeading from '@/components/ListHeading';
-import TrendCard from '@/components/cards/TrendCard';
-import { useGetMovieByGenre, useGetMovieById, useGetSimilarMovie } from '@/services/useGetMovieByGenre';
+import {TrendCard} from '@/components/cards/TrendCard';
+import { useGetMovieById, useGetSimilarMovie } from '@/services/useGetMovieByGenre';
 import { ActivityIndicator } from 'react-native';
 import { Audio } from 'expo-av'
 import MoviePlayer from '@/components/MoviePlayer';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import ApiFetcher from "@/services/ApiFetcher"
+import { useGetWatchlist } from '@/services/UseGetMovieFavourites';
+import { UserProfile } from '../profile';
+import { fetchUser } from '@/services/Api';
+import { useWatchlistActions } from '@/services/useWatchlistAction';
+import { isInWatchlist } from '@/services/watchlistcache';
 
+const SafeAreaView = styled(RNSafeAreaView)
 const MovieDetails = () => {
-    const SafeAreaView = styled(RNSafeAreaView)
+  
     const { id } = useLocalSearchParams<{id:string}>();
-    const {data:actionMovie} = useGetSimilarMovie(id)
+    const {data:similarMovie} = useGetSimilarMovie(id)
     const { data: movie, isLoading, error, refetch } = useGetMovieById(id);
-    const [isFavourited, setIsFavourited] = useState(false)
+    const { data: watchlist,  } = useGetWatchlist();
+    const { data:user } = useQuery<UserProfile>({
+    queryKey: ["user-profile"],
+    queryFn: fetchUser,
+  });
+  const { add, remove } = useWatchlistActions(user?.result.email);
+
+
+
     const [showPlayer, setShowPlayer] = useState(false) // MODAL STATE
-    
+    const queryClient = useQueryClient();
     const router = useRouter()
     const scaleAnim = useRef(new Animated.Value(1)).current
     const navigation = useNavigation()
+    const imgBaseURL = "https://image.tmdb.org/t/p/w500/"
+    const moviePoster = movie ? `${imgBaseURL}${movie.poster_path}` : image.moviePoster
+    const watchlistCache = queryClient.getQueryData(['watchlist']);
     
+    const isMovieFavourite = isInWatchlist(watchlistCache, id);
     const handleBack = () => {
         if (navigation.canGoBack()) {
             router.back()
@@ -33,13 +53,7 @@ const MovieDetails = () => {
             router.push('/(tabs)')
         }
     }
-    
-    const imgBaseURL = "https://image.tmdb.org/t/p/w500/"
-    const moviePoster = movie ? `${imgBaseURL}${movie.poster_path}` : image.moviePoster
-    
-    useEffect(() => {
-        setIsFavourited(false)
-    }, [id])
+  
 
     const playLikeSound = async () => {
         const { sound } = await Audio.Sound.createAsync(
@@ -53,15 +67,56 @@ const MovieDetails = () => {
         })
     }
     
-    const handleAddToFav = async () => {
-        setIsFavourited(prev => !prev)
-        Animated.sequence([
-            Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
-            Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+
+ const addMovieToWatchlist = useMutation({
+  mutationFn: async () => {
+    return await ApiFetcher.post(`/p3/watch-list/?movie_id=${id}`);
+  },
+  onSuccess: async (response) => { 
+    queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+      Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
         ]).start()
-        await playLikeSound()
-        Alert.alert("Added to favourites!")
-    }
+        // await playLikeSound()
+        Alert.alert("Added to favourites!") 
+  },
+  onError: (error) => {
+    console.log(error, 'adding  error');
+    Alert.alert('Error', 'Failed!');
+  }
+});
+
+const deleteMutation = useMutation({
+  mutationFn: async (watchlistId: string) => {
+    return await ApiFetcher.delete(`/p3/watch-list/${watchlistId}?email=${user?.result.email}`);
+  },
+  onSuccess: async () => {
+    queryClient.invalidateQueries({ queryKey: ['watchlist'] });
+     Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 1.3, duration: 150, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+        ]).start()
+        // await playLikeSound()
+     Alert.alert('Success', 'Movie removed from favourite');
+  },
+  onError: (error) => {
+    console.log(error, 'delete error');
+    Alert.alert('Error', 'Failed to delete from watchlist');
+  }
+});
+const handleAddToFav = () => {
+  if (isMovieFavourite) {
+   const item = watchlist?.find(
+  (m: any) => String(m.movie_id) === String(id)
+);
+
+    if (item) remove.mutate(item.id);
+  } else {
+    add.mutate(id);
+  }
+};
+
 
     if (isLoading) {
         return (
@@ -92,15 +147,15 @@ const MovieDetails = () => {
                     <Pressable onPress={handleBack}>
                         <Ionicons color='white' size={24} name='arrow-back'/>
                     </Pressable>
-                    <TouchableHighlight onPress={handleAddToFav}>
+                    <Pressable onPress={ handleAddToFav} hitSlop={20}>
                         <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                             <Ionicons
-                                color={isFavourited ? '#F7434B' : 'white'}
+                                color={isMovieFavourite ? '#F7434B' : 'white'}
                                 size={24}
-                                name={isFavourited ? 'heart' : 'heart-outline'}
+                                name={isMovieFavourite ? 'heart' : 'heart-outline'}
                             />
                         </Animated.View>
-                    </TouchableHighlight>
+                    </Pressable>
                 </View>
 
                 {/* HERO POSTER - No player here */}
@@ -179,7 +234,7 @@ const MovieDetails = () => {
                         <View>
                             <Text className='text-gray mb-2'>Studios</Text>
                             {movie?.production_companies?.map((company: any) => (
-                                <View className='flex-row items-center gap-2 mb-1' key={company.name}>
+                                <View className='flex-row items-center gap-2 mb-1' key={company.id}>
                                     <View className='w-1 h-1 bg-red rounded-full'/>
                                     <Text className='text-white text-sm'>{company.name}</Text>
                                 </View>
@@ -192,7 +247,7 @@ const MovieDetails = () => {
                 <View className='mt-8 px-5 pb-10'>
                     <ListHeading title="Similar Movies" />
                     <FlatList 
-                        data={actionMovie} 
+                        data={similarMovie} 
                         renderItem={({item}) => (
                             <View className="mr-4 w-44">
                                 <TrendCard 
