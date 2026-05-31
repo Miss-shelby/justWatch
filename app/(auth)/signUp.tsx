@@ -135,7 +135,7 @@ export default function SignUp() {
               <View className="mt-14 w-full">
                   <View className="w-full">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4 text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.email}
                           placeholder="Email"
@@ -151,7 +151,7 @@ export default function SignUp() {
                   </View>
                   <View className="w-full mt-6 relative">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.username}
                           placeholder="Username"
@@ -167,7 +167,7 @@ export default function SignUp() {
                   </View>
                   <View className="w-full mt-6 relative">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.first_name}
                           placeholder="First Name"
@@ -183,7 +183,7 @@ export default function SignUp() {
                   </View>
                   <View className="w-full mt-6 relative">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.last_name}
                           placeholder="Last Name"
@@ -199,7 +199,7 @@ export default function SignUp() {
                   </View>
                   <View className="w-full mt-6 relative">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.password}
                           placeholder="Password"
@@ -218,7 +218,7 @@ export default function SignUp() {
                   </View>
                   <View className="w-full mt-6 relative">
                       <TextInput 
-                          className='bg-[#141414] w-full rounded-2xl border-none px-4 py-4  text-lg font-sans-medium text-white placeholder:text-gray!'
+                          className='bg-[#141414] w-full rounded-2xl border-none px-4 pt-3 pb-4.5  text-lg font-sans-medium text-white placeholder:text-gray!'
                           autoCapitalize="none"
                           value={formData.confirm_password}
                           placeholder="Confirm Password"

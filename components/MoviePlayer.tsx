@@ -4,11 +4,9 @@ import { WebView } from 'react-native-webview';
 
 export default function MoviePlayer({ movieId }:any) {
   const webViewRef = useRef(null);
-
-  
-
   return (
     <View style={{ width: '100%', height: 600 }}>
+       
       <WebView 
       allowfullscreen
         source={{

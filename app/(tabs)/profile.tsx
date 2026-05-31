@@ -1,10 +1,10 @@
 import { favouriteGenres } from "@/constants/data";
-import { fetchUser } from "@/services/Api";
+import { fetchUser, useGetAiChatHistory } from "@/services/Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { styled } from "nativewind";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -16,6 +16,7 @@ import {
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../context/AuthContext";
 import { formatDate } from "@/utils/helpers";
+import { useGetWatchlist } from "@/services/UseGetMovieFavourites";
 
 
 const SafeAreaView = styled(RNSafeAreaView);
@@ -40,6 +41,20 @@ export default function Profile() {
     queryKey: ["user-profile"],
     queryFn: fetchUser,
   });
+  const { data: watchlist} = useGetWatchlist();
+  const {data:chatHistory} = useGetAiChatHistory();
+  const [watchedMovies, setWatchedMovies] = useState<number>(0);
+
+  useEffect(() => {
+    const loadWatchedMovies = async () => {
+      const count = await AsyncStorage.getItem("watched_movie_count");
+      setWatchedMovies(Number(count) || 0);
+    };
+    loadWatchedMovies();
+  }, []);
+ 
+
+ 
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("access_token");
@@ -92,15 +107,15 @@ export default function Profile() {
           </View>
           <View className="bg-[#2E2E2E]/15 flex flex-row justify-around w-full flex-1 py-3.5 px-2 mb-4 mt-8 rounded-md">
             <View>
-              <Text className="text-red text-center font-bold text-lg">84</Text>
+              <Text className="text-red text-center font-bold text-lg">{watchedMovies}</Text>
               <Text className="text-[#666] text-center "> Watched</Text>
             </View>
             <View>
-              <Text className="text-red text-center font-bold text-lg">84</Text>
-              <Text className="text-[#666] text-center "> Saved</Text>
+              <Text className="text-red text-center font-bold text-lg">{watchlist?.length ??0 }</Text>
+              <Text className="text-[#666] text-center "> Watchlist</Text>
             </View>
             <View>
-              <Text className="text-red text-center font-bold text-lg">84</Text>
+              <Text className="text-red text-center font-bold text-lg">{chatHistory?.result?.length ??0}</Text>
               <Text className="text-[#666] text-center "> AI Chat</Text>
             </View>
           </View>

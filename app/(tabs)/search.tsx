@@ -2,7 +2,7 @@ import { Text, View, Image, StyleSheet, ActivityIndicator, KeyboardAvoidingView,
 import Animated from "react-native-reanimated";
 import image from "@/constants/image";
 import { useAnimatedHeader } from "@/components/hooks/useAnimatedHeader";
-import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { styled } from "nativewind";
 import TrendCard from "@/components/cards/TrendCard";
 import { useGetAllMovies } from "@/services/useGetAllMovies";
@@ -11,9 +11,12 @@ import { useSearchMovies } from "@/services/useSearchMovies";
 import { Platform } from "react-native";
 import { Link } from "expo-router";
 
+
+
 export default function SearchScreen() {
  const { scrollHandler } = useAnimatedHeader();
- const SafeAreaView = styled(RNSafeAreaView)
+ const insets = useSafeAreaInsets();
+ 
  const [query, setQuery] = useState('')
 
  // always fetches on page load
@@ -46,20 +49,20 @@ const imgBaseURL ="https://image.tmdb.org/t/p/w500/"
 
  const header = useMemo(
     () => (
-      <SafeAreaView>
+      <View style={{ paddingTop: insets.top }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
         >
           <TextInput
-            className="bg-[#141414] w-full rounded-2xl border-none px-4 py-4 text-lg font-sans-medium text-white placeholder:text-gray"
+            className="bg-[#141414] w-full rounded-2xl border-none px-4 pt-2 pb-4.5 text-lg font-sans-medium text-white placeholder:text-gray"
             value={query}
             onChangeText={setQuery}
             placeholder="Search movies..."
             placeholderTextColor="#888"
           />
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
     ),
     [query]
   );
@@ -89,7 +92,7 @@ if (error) {
       scrollEventThrottle={16}
       className='bg-bg'
       contentContainerStyle={{
-        paddingTop: 65,
+        paddingTop: 60,
         paddingBottom: 100,
         paddingHorizontal: 20,//gives space space at left and right 
        
@@ -98,9 +101,9 @@ if (error) {
       ListHeaderComponent={header}
       data={movies}
        refreshing={isRefetching}
-       onRefresh={refetch}
+       onRefresh={refetch} 
       renderItem={({item})=>(
-          <Link href={{
+          <Link className="mt-3" href={{
             pathname: "/movieDetails/[id]",
             params: { id: item.id }
           }} asChild>
@@ -120,7 +123,7 @@ if (error) {
       }
       onEndReachedThreshold={0.5} // loads next page when 50% from bottom
        ListFooterComponent={ isFetchingNextPage || isFetchingNextPopularPage  ? <ActivityIndicator /> : null}
-      keyExtractor={(item)=> item.id}
+      keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
     //   onEndReached={() => {
     //  if (query && hasNextPage) fetchNextPage()
     //  }}

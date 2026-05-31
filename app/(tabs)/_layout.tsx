@@ -22,8 +22,8 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: "#ffffff",
         tabBarInactiveTintColor: "#6b6b6b",
-        // animation: 'fade',
-
+        animation: 'none',
+ 
         // Frosted glass tab bar on iOS, solid on Android
         ...(Platform.OS === "ios"
           ? {

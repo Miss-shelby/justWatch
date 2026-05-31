@@ -74,9 +74,7 @@ export const useGetAiChatHistory:any =  () => {
   return useQuery({
     queryKey: ["ai-chat"], 
     queryFn: async () => {
-      const response = await ApiFetcher.get("/ai/chats/");
-      console.log(response,'fetch api response');
-       
+      const response = await ApiFetcher.get("/ai/chats/");  
       return response 
     }
  

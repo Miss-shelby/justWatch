@@ -1,6 +1,6 @@
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styled } from "nativewind";
-import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import  { FavouriteCard } from "@/components/cards/TrendCard";
 import { FlatList } from "react-native";
 import { fetchUser, UsegetFavourites } from "@/services/Api";
@@ -10,9 +10,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserProfile } from "./profile";
 import { useWatchlistActions } from "@/services/useWatchlistAction";
 export default function Favourites() {
-   const SafeAreaView = styled(RNSafeAreaView)
+    const insets = useSafeAreaInsets();
     const { data: watchlist, isLoading, refetch } = useGetWatchlist();
-    // console.log(watchlist,'favourite watchlist');
+    // console.log(watchlist.length,'favourite watchlist');
 
     const queryClient = useQueryClient();
     const { data:user } = useQuery<UserProfile>({
@@ -50,23 +50,29 @@ const deleteMutation = useMutation({
   }
 });
 
+
 const handleDelete = (watchlistId: string) => {
   remove.mutate(watchlistId);
 };
 
       
 if (isLoading) {
-  return (
+  return ( 
     <View className="flex-1 items-center justify-center bg-[#0e0e0e]">
       <ActivityIndicator color="#fff" />
     </View>
   );
 }
   return (
-     <SafeAreaView className="flex-1 w-full bg-[#0e0e0e] p-5">
+     <View 
+       className="flex-1 w-full bg-[#0e0e0e] px-5"
+       style={{
+         paddingTop: insets.top + 20,
+         paddingBottom: insets.bottom + 20,
+       }}
+     >
          <FlatList data={watchlist} renderItem={({item})=>(
-
-              <FavouriteCard title={item.original_title} id={item.movie_id}releaseDate={item.release_date} rating={item.vote_average} moviePoster=
+              <FavouriteCard title={item.original_title} id={item.id}releaseDate={item.release_date} rating={item.vote_average} moviePoster=
               {`${imgBaseURL}${item.poster_path}`} handleDelete={()=>handleDelete(item.id)} />
               )} 
               ListHeaderComponent={ () => (
@@ -86,7 +92,7 @@ if (isLoading) {
                numColumns={2}
                columnWrapperStyle={{ gap: 16 }}
               />
-      </SafeAreaView>
+      </View>
           
       
   );

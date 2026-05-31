@@ -1,14 +1,24 @@
-import { View, Text, Image, TouchableOpacity, Alert, Pressable } from 'react-native'
+import { View, Text, TouchableOpacity, Alert, Pressable } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import image from '@/constants/image'
 import { Link } from 'expo-router'
+import { Image } from "expo-image";
 
 export const TrendCard = ({title,releaseDate,rating,moviePoster}:TrendingMovieProps) => {
   // removed mr-4 
   return (
     <View className='bg-transparent mt-4   rounded-xl '>
-        <Image className='rounded-xl h-72 w-full' source={{uri:moviePoster}}/>
+       <Image
+        source={{ uri: moviePoster }}
+        contentFit="cover"
+        cachePolicy="memory-disk"
+        transition={300}
+        style={{
+          width: "100%",
+          height: 288,
+          borderRadius: 12,
+        }}
+      />
       <View>
         <Text numberOfLines={1}  className='text-white text-lg self-start font-heading text-center mb-1'>{title}</Text>
         <View className='flex-row justify-between items-center'>
@@ -37,7 +47,14 @@ export const FavouriteCard = ({title,releaseDate,rating,moviePoster,id,handleDel
                 params: { id: id }
             }} asChild >
             <TouchableOpacity className="">
-              <Image className='rounded-xl h-60 w-full' source={{uri:moviePoster}}/>
+              <Image transition={30} cachePolicy='memory-disk' contentFit='cover'
+               className='rounded-xl  w-full' source={{uri:moviePoster}}
+               style={{
+              width: "100%",
+              height: 240,
+              borderRadius: 12,
+            }}
+               />
             </TouchableOpacity>
         </Link>
       <View>

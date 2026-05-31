@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { AnimatedHeader } from "@/components/headers/AnimatedHeader";
 import { useNavigation } from "expo-router";
-import { useSharedValue, useAnimatedScrollHandler } from "react-native-reanimated";
-import { AnimatedHeader } from "@/components/AnimatedHeader";
+import { useEffect, useLayoutEffect } from "react";
+import { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 
 export function useAnimatedHeader() {
   const navigation = useNavigation();
@@ -13,11 +13,11 @@ export function useAnimatedHeader() {
     },
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerBackground: () => <AnimatedHeader scrollY={scrollY} />,
     });
-  }, []);
+  }, [navigation, scrollY]);
 
   return { scrollHandler, scrollY };
 }

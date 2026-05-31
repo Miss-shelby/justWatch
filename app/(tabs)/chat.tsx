@@ -1,18 +1,18 @@
 /* eslint-disable react/no-unescaped-entities */
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View, Keyboard } from "react-native";
-import { useEffect, useState, useRef } from "react";
-import { styled } from "nativewind";
-import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { postAiChat, useGetAiChatHistory } from "@/services/Api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChatMessage, FailedMessage, PendingMessage } from "@/components/messages/MessagesUi";
+import { postAiChat, useGetAiChatHistory } from "@/services/Api";
+import { Ionicons } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { styled } from "nativewind";
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
 
 
 
-export default function Chat() { 
+export default function Chat() {
   const [userMsg, setUserMsg] = useState('');
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -33,7 +33,7 @@ export default function Chat() {
   }, []);
 
   const queryClient = useQueryClient();
-  const {data:chatHistory,isLoading,isError,refetch} = useGetAiChatHistory();
+  const { data: chatHistory, isLoading, isError, refetch } = useGetAiChatHistory();
 
   const mutation = useMutation<any, any, any>({
     mutationFn: postAiChat,
@@ -70,8 +70,8 @@ export default function Chat() {
   };
 
 
-  return ( 
-    <SafeAreaView className="bg-bg flex-1"> 
+  return (
+    <SafeAreaView className="bg-bg flex-1">
       {/* FIXED HEADER */}
       <View className="flex-row gap-4 border-b px-5 py-4 border-[#2A2A2A] bg-bg">
         <View className="bg-red h-10 w-10 flex justify-center items-center rounded-full">
@@ -87,7 +87,7 @@ export default function Chat() {
       </View>
 
       {/* SCROLLABLE MESSAGES */}
-      <ScrollView 
+      <ScrollView
         ref={scrollViewRef}
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
@@ -99,18 +99,18 @@ export default function Chat() {
         {/* AI Message */}
 
         {isLoading && <Text className="text-gray text-center">Loading chat history...</Text>}
-        {isError && !messages?.length &&  
-           <View className=" flex-1 items-center justify-center">
+        {isError && !messages?.length &&
+          <View className=" flex-1 items-center justify-center">
             <Text className="text-white text-center">Failed to fetch history 😿.</Text>
             <Text className="text-gray text-sm mt-2" onPress={() => refetch()}>Tap to retry</Text>
-      </View>
+          </View>
         }
         {
-           messages?.length > 0 &&(
-             messages.map((chat:any, index:number)=>
-                <ChatMessage key={index} chat={chat} />
-             )
-           )
+          messages?.length > 0 && (
+            messages.map((chat: any, index: number) =>
+              <ChatMessage key={index} chat={chat} />
+            )
+          )
         }
 
         {/* Pending message — show instantly on Send */}
@@ -134,7 +134,7 @@ export default function Chat() {
             onDismiss={handleDismiss}
           />
         )}
-         
+
         {
           messages?.length == 0 && !isLoading && !isError && (
             <View className=" flex-1 items-center justify-center">
@@ -147,24 +147,24 @@ export default function Chat() {
       {/* FIXED INPUT AREA */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <View className={`w-full relative flex-row items-center border-t px-5 py-4 border-[#2A2A2A] bg-bg gap-3 ${!isKeyboardVisible ? 'pb-18' : ''}`}>
           <TextInput
-            className='bg-[#252525] rounded-3xl border border-[#333] flex-1 px-4  pt-3 pb-1.5 text-white placeholder:text-gray text-base' 
+            className='bg-[#252525] rounded-3xl border border-[#333] flex-1 px-4  pt-3 pb-1.5 text-white placeholder:text-gray text-base'
             style={{ minHeight: 48, maxHeight: 120 }}
             autoCapitalize="none"
-            multiline={true} 
+            multiline={true}
             value={userMsg}
             placeholder="Ask me anything about movies"
             placeholderTextColor="#666"
             onChangeText={setUserMsg}
           />
-          <Pressable onPress={()=>setUserMsg('')} className="absolute right-28 top-7.5"><Ionicons size={20} name="close" color='red'/></Pressable> 
+          <Pressable onPress={() => setUserMsg('')} className="absolute right-28 top-7.5"><Ionicons size={20} name="close" color='red' /></Pressable>
           <Pressable onPress={handleSend} disabled={mutation.isPending || !userMsg.trim() || mutation.isError} className={`bg-red px-4 py-3 rounded-full ${!userMsg.trim() || mutation.isPending || mutation.isError ? 'opacity-50' : ''}`}>
             <Text className="text-white font-medium">Send</Text>
           </Pressable>
-        </View> 
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

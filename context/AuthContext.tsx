@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsSignedIn(!!token);
       setIsReady(true);
     };
-    checkAuth();
+    checkAuth();a
   }, []);
 
   console.log(isSignedIn,'auth value in context');

@@ -51,8 +51,9 @@ function AppLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: "blue" },
+          
         }}
-      />
+      /> 
     </QueryClientProvider>
   );
 }

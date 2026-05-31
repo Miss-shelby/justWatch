@@ -1,4 +1,5 @@
-import { View, Text, Pressable, ImageBackground } from 'react-native'
+import { View, Text, Pressable, Dimensions } from 'react-native'
+import {ImageBackground} from "expo-image"
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import image from '@/constants/image'
@@ -15,9 +16,21 @@ const TrendingNowCard = () => {
     const moviePoster = topRated ? `${imgBaseURL}${topRated[0].poster_path}` : image.moviePoster
     const genreIds = topRated[0]?.genre_ids ?? []
    const filteredGenre = genreIds?.map((id: number) => GENRES[id]).filter(Boolean)
+
+   const { height } = Dimensions.get("window");
+   
   return (
     <Pressable className='mt-4'> 
-        <ImageBackground className='bg-no-repeat flex-1 justify-center h-[60vh] w-full rounded-2xl overflow-hidden' resizeMode='cover' source={{uri:moviePoster}}>
+        <ImageBackground
+           transition={30} cachePolicy='memory-disk' contentFit='cover'
+           className='bg-no-repeat flex-1 justify-center ' 
+            style={{ 
+            width: "100%",
+            height:  height * 0.6,
+            borderRadius: 10,
+            overflow: 'hidden',
+          }}
+          source={{uri:moviePoster}}> 
          {/* Gradient fade over the bottom of the image */}
         <LinearGradient
           colors={['transparent','rgba(14,14,14,0.85)', '#1E1E1E']}
