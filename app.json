@@ -9,15 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "bundleIdentifier":"com.ahmie.justWatch",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.ahmie.justWatch",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
-        
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
@@ -31,7 +32,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splashScreen.png",
+          "image": "./assets/images/splashscreen.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -45,6 +46,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "65ecf352-dbc0-49b6-aa6d-39a4a5f06522"
+      }
     }
   }
 }

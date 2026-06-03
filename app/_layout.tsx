@@ -50,8 +50,8 @@ function AppLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "blue" },
-          
+          contentStyle: { backgroundColor: "#1E1E1E" },
+
         }}
       /> 
     </QueryClientProvider>
