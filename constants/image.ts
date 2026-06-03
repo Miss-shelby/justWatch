@@ -1,4 +1,4 @@
-import splashPattern from "@/assets/images/splashPattern.png";
+import splashPattern from "@/assets/images/splashscreen.png";
 import logo from "@/assets/images/icon.png"
 import moviePoster from "@/assets/images/movie-poster-one.jpg"
 import moviePosterTwo from "@/assets/images/movie-poster-two.jpg"

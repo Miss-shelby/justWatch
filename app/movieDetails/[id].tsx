@@ -1,7 +1,6 @@
 import { TrendCard } from "@/components/cards/TrendCard";
 import ListHeading from "@/components/headers/ListHeading";
 import MoviePlayer from "@/components/MoviePlayer";
-import image from "@/constants/image";
 import { fetchUser } from "@/services/Api";
 import {
     useGetMovieById,
@@ -38,6 +37,7 @@ import {
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 import { UserProfile } from "../(tabs)/profile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import image from "@/constants/image";
 
 const SafeAreaView = styled(RNSafeAreaView);
 const MovieDetails = () => {
